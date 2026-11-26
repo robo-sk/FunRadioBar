@@ -4,24 +4,26 @@ Listeners install from GitHub Releases. The app reads the signed feed at `https:
 
 ## One-time signing setup
 
-In **GitHub → Settings → Secrets and variables → Actions**, configure the following repository secrets. Enter credentials directly in GitHub or pipe them into `gh secret set` on a trusted Mac. Keep an encrypted backup of each private key. Never put a private key, certificate export or password in a commit, issue or release asset.
+The release publisher is **itinn s.r.o.** (Apple team `LQJNDVBL43`). The **release** environment accepts version tags, and the release tag ruleset restricts tag management to repository administrators. Manage the following secrets under **GitHub → Settings → Environments → release**. Enter credentials directly in GitHub or pipe them into `gh secret set` on a trusted Mac. Keep an encrypted backup of each private key. Never put a private key, certificate export or password in a commit, issue or release asset.
 
 | Secret | Value |
 | --- | --- |
 | `DEVELOPER_ID_P12_BASE64` | Base64-encoded PKCS#12 export of your **Developer ID Application** certificate **and private key**. In Keychain Access, export the identity from **My Certificates**. |
 | `DEVELOPER_ID_P12_PASSWORD` | Password chosen when exporting the PKCS#12 file. |
 | `APPLE_ID` | Apple Account email used for notarization. |
-| `APPLE_TEAM_ID` | Your Apple Developer team’s ten-character ID. |
+| `APPLE_TEAM_ID` | The ITINN Apple Developer team ID. |
 | `APPLE_APP_PASSWORD` | App-specific password for that Apple Account. |
 | `SPARKLE_ED_PRIVATE_KEY` | The Sparkle Ed25519 private key corresponding to the public key embedded in the app. The initial key is in the release owner's login Keychain under the Sparkle account `robo-sk.FunRadioBar`. Keep using that key for subsequent releases. |
 
 For example, from the directory containing your certificate export, this command stores it directly in Actions:
 
 ```sh
-base64 < DeveloperID.p12 | gh secret set DEVELOPER_ID_P12_BASE64 -R robo-sk/FunRadioBar
+base64 < DeveloperID.p12 | gh secret set DEVELOPER_ID_P12_BASE64 -R robo-sk/FunRadioBar --env release
 ```
 
 Apple signs the identity certificate and checks the submitted app for distribution. Sparkle verifies the signatures on the feed and ZIP whenever it updates an installation. Replacing the Sparkle key without a migration plan will strand existing installations. [Apple Developer ID](https://developer.apple.com/developer-id/) · [Sparkle signing and key rotation](https://sparkle-project.org/documentation/#3-seal-your-updates-for-security)
+
+When renewing the Developer ID certificate, verify its team and update the pinned certificate fingerprint in the release workflow.
 
 ## Cut a release
 

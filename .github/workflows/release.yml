@@ -22,6 +22,7 @@ jobs:
   draft:
     if: github.event_name == 'push'
     needs: check
+    environment: release
     runs-on: macos-15
     timeout-minutes: 60
     permissions:
@@ -54,10 +55,12 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -s -k "$password" "$keychain" >/dev/null
           security list-keychains -d user -s "$keychain"
           identity=$(security find-identity -v -p codesigning "$keychain" | awk '/"Developer ID Application:/ {print $2; exit}')
-          test -n "$identity"
+          [[ "$identity" == "982551BCE874C85147FAF87193149B9F711C7B0F" ]]
           echo "CODE_SIGN_IDENTITY=$identity" >> "$GITHUB_ENV"
       - name: Build and sign the universal app
-        run: bash scripts/build-app.sh "${GITHUB_REF_NAME#v}"
+        run: |
+          bash scripts/build-app.sh "${GITHUB_REF_NAME#v}"
+          codesign -dv --verbose=4 dist/FunRadioBar.app 2>&1 | grep -Fx 'TeamIdentifier=LQJNDVBL43'
       - name: Notarize and staple
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
