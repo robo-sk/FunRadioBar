@@ -1,7 +1,7 @@
 <p align="center"><img src="docs/images/app-icon.png" width="88" height="88" alt=""></p>
 <h1 align="center">FunRadioBar</h1>
 <p align="center">Slovak and Czech radio, plus SomaFM, one click from your Mac’s menu bar.</p>
-<p align="center"><strong><a href="https://github.com/robo-sk/FunRadioBar/releases">Download for Mac</a></strong><br><sub>macOS Sonoma 14 or later · Apple silicon and Intel · English and Slovenčina</sub></p>
+<p align="center"><strong><a href="https://github.com/robo-sk/FunRadioBar/releases/latest/download/FunRadioBar.zip">Download for Mac</a></strong> · <a href="https://github.com/robo-sk/FunRadioBar/releases/latest">Release notes</a><br><sub>macOS Sonoma 14 or later · Apple silicon and Intel · English and Slovenčina</sub></p>
 
 ## On your Mac
 
@@ -12,7 +12,7 @@
 
 ### The menu bar player
 
-Pick a station, press **Play Live**, and close the panel. The radio keeps playing. Star your favorites to find them again. Open **Schedule &amp; Queue** for upcoming shows or songs when the station provides them.
+Click a station to start listening. You can close the panel while the radio plays. Star your favorites to find them again. Open **Schedule &amp; Queue** for upcoming shows or songs when the station provides them.
 
 ### The mini player
 
@@ -26,9 +26,9 @@ Keep it on the desktop or pin it above other windows. The moon button in the mai
 
 ## Install
 
-1. Open the **[FunRadioBar releases](https://github.com/robo-sk/FunRadioBar/releases)** page. Under **Assets** on the latest published version, download **FunRadioBar.zip**. If the release list is empty, the first Mac download is still being prepared.
+1. Download the latest **[FunRadioBar.zip](https://github.com/robo-sk/FunRadioBar/releases/latest/download/FunRadioBar.zip)**. The app is signed by **itinn s.r.o.** and notarized by Apple.
 2. Double-click the ZIP in **Downloads**, then drag **FunRadioBar.app** into **Applications**.
-3. Open **FunRadioBar** from Applications. Click the radio icon in the menu bar, pick **Fun Rádio** or another station, and press **Play Live**. Use the speaker slider to adjust the volume independently of the rest of your Mac.
+3. Open **FunRadioBar** from Applications. Click the radio icon in the menu bar. Press **Play Live** to listen to the current station, or click another station to play it immediately. Use the speaker slider to adjust the volume independently of the rest of your Mac.
 
 ## Stations and updates
 
