@@ -104,6 +104,7 @@ final class RadioPlayerManager: ObservableObject {
     private var player: AVPlayer?
     private var statusObservation: NSKeyValueObservation?
     private var itemObservation: NSKeyValueObservation?
+    private var refreshingFunAndVlnaTracks = false
     private var metadataTimer: Timer?
     private var sleepCountdownTimer: Timer?
     private var cachedArtworkURL: URL?
@@ -499,13 +500,12 @@ final class RadioPlayerManager: ObservableObject {
     }
 
     func refreshAllMetadata() async {
-        async let sepiaTask: Void = fetchSepiaTracks()
-        async let icecastTask: Void = fetchIcecastStats()
+        async let radioTask: Void = refreshFunAndVlnaTracks()
         async let externalTask: Void = fetchExternalNetworksMetadata()
         async let funRelacieTask: LiveShowInfo? = fetchShowSchedule(stationSlug: "funradio")
         async let vlnaRelacieTask: LiveShowInfo? = fetchShowSchedule(stationSlug: "vlna")
 
-        let (_, _, _, funShow, vlnaShow) = await (sepiaTask, icecastTask, externalTask, funRelacieTask, vlnaRelacieTask)
+        let (_, _, funShow, vlnaShow) = await (radioTask, externalTask, funRelacieTask, vlnaRelacieTask)
         if let funShow { self.funShowInfo = funShow }
         if let vlnaShow { self.vlnaShowInfo = vlnaShow }
         self.lastUpdated = Date()
@@ -514,14 +514,38 @@ final class RadioPlayerManager: ObservableObject {
         updateNowPlayingCenter()
     }
 
-    private func fetchSepiaTracks() async {
-        guard let url = URL(string: "https://www.funradio.sk/prave-hra/?stanica=vsetky") else { return }
+    private func refreshFunAndVlnaTracks() async {
+        guard !refreshingFunAndVlnaTracks else { return }
+        refreshingFunAndVlnaTracks = true
+        defer { refreshingFunAndVlnaTracks = false }
+
+        async let playlists = fetchSepiaTracks()
+        async let titles = fetchIcecastStats()
+        let fresh = await Self.nowPlayingTracks(playlists: playlists, fallbackTitles: titles)
+        stationTracks.merge(fresh) { _, new in new }
+    }
+
+    static func nowPlayingTracks(playlists: [String: [LiveTrackInfo]], fallbackTitles: [String: String]) -> [String: [LiveTrackInfo]] {
+        var tracks = playlists
+        for (id, rawTitle) in fallbackTitles {
+            guard tracks[id]?.contains(where: { $0.order == 0 }) != true else { continue }
+            let parts = rawTitle.components(separatedBy: " - ")
+            let artist = parts.count > 1 ? parts[0] : ""
+            let title = parts.count > 1 ? parts.dropFirst().joined(separator: " - ") : rawTitle
+            let current = LiveTrackInfo(order: 0, artist: artist, title: title, coverURL: nil, videoURL: nil, ageSeconds: 0)
+            tracks[id, default: []].insert(current, at: 0)
+        }
+        return tracks
+    }
+
+    private func fetchSepiaTracks() async -> [String: [LiveTrackInfo]] {
+        guard let url = URL(string: "https://www.funradio.sk/prave-hra/?stanica=vsetky") else { return [:] }
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
-            guard (response as? HTTPURLResponse)?.statusCode == 200 else { return }
-            guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+            guard (response as? HTTPURLResponse)?.statusCode == 200 else { return [:] }
+            guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return [:] }
 
-            var updated: [String: [LiveTrackInfo]] = stationTracks
+            var updated: [String: [LiveTrackInfo]] = [:]
             for station in stations {
                 guard let rows = root[station.sepiaKey] as? [[String: Any]] else { continue }
                 var parsed: [LiveTrackInfo] = []
@@ -552,18 +576,18 @@ final class RadioPlayerManager: ObservableObject {
                     updated[station.id] = parsed.sorted { $0.order < $1.order }
                 }
             }
-            self.stationTracks = updated
+            return updated
         } catch {
-            // Keep cached values on transient network failure
+            return [:]
         }
     }
 
-    private func fetchIcecastStats() async {
-        guard let url = URL(string: "https://www.funradio.sk/api/zive/") else { return }
+    private func fetchIcecastStats() async -> [String: String] {
+        guard let url = URL(string: "https://www.funradio.sk/api/zive/") else { return [:] }
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
-            guard (response as? HTTPURLResponse)?.statusCode == 200 else { return }
-            guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+            guard (response as? HTTPURLResponse)?.statusCode == 200 else { return [:] }
+            guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return [:] }
 
             var listenersMap: [String: Int] = [:]
             var fallbackTitles: [String: String] = [:]
@@ -600,19 +624,9 @@ final class RadioPlayerManager: ObservableObject {
                 self.stationListeners[k] = v
             }
 
-            // Apply Icecast fallback track title if Sepia didn't have one
-            for (stationId, rawTitle) in fallbackTitles {
-                if self.stationTracks[stationId]?.isEmpty ?? true {
-                    let parts = rawTitle.components(separatedBy: " - ")
-                    let artist = parts.count > 1 ? parts[0] : ""
-                    let song = parts.count > 1 ? parts.dropFirst().joined(separator: " - ") : rawTitle
-                    self.stationTracks[stationId] = [
-                        LiveTrackInfo(order: 0, artist: artist, title: song, coverURL: nil, videoURL: nil, ageSeconds: 0)
-                    ]
-                }
-            }
+            return fallbackTitles
         } catch {
-            // Ignore transient error
+            return [:]
         }
     }
 
