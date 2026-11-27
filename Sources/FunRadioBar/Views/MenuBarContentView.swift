@@ -118,22 +118,10 @@ struct MenuBarContentView: View {
                         .font(.caption)
                         .foregroundStyle(textSecondary)
                 }
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack(spacing: 8) {
-                        Text("FunRadioBar \(AppUpdates.installedVersion)")
-                            .font(.caption)
-                            .foregroundStyle(textMuted)
-                        if let version = updates.availableVersion {
-                            Button(l10n.updateAvailable(version)) { updates.check() }
-                                .controlSize(.small)
-                                .buttonStyle(.bordered)
-                        }
-                    }
-                    footerBar
-                }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(Color(hex: 0x080A11))
+                footerBar
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(Color(hex: 0x080A11))
             }
         }
         .frame(width: 410, height: 640)
@@ -1153,6 +1141,22 @@ struct MenuBarContentView: View {
             .accessibilityLabel(l10n.menuBarLabelPickerTitle)
             .accessibilityValue(l10n.menuBarLabelModeName(manager.menuBarLabelMode))
             .controlHelp("\(l10n.menuBarLabelPickerTitle) · \(l10n.menuBarLabelModeName(manager.menuBarLabelMode))")
+
+            Text("v\(AppUpdates.installedVersion)")
+                .foregroundStyle(textMuted)
+                .fixedSize()
+            if let version = updates.availableVersion {
+                Button {
+                    updates.check()
+                } label: {
+                    Image(systemName: "arrow.down.circle.fill")
+                        .foregroundStyle(textPrimary)
+                        .frame(width: 22, height: 22)
+                        .background(cardElevated, in: Circle())
+                }
+                .accessibilityLabel(l10n.updateAvailable(version))
+                .controlHelp(l10n.updateAvailable(version))
+            }
 
             Spacer(minLength: 0)
 
