@@ -360,7 +360,7 @@ final class RadioPlayerManager: ObservableObject {
             return stations
         case .favorites:
             return stations.filter { favoriteStationIds.contains($0.id) }
-        case .funRadio, .vlna, .bauerAndCz, .stvr, .somaFM:
+        case .funRadio, .vlna, .bauerAndCz, .stvr:
             return stations.filter { $0.network == selectedNetworkFilter }
         }
     }
@@ -638,9 +638,8 @@ final class RadioPlayerManager: ObservableObject {
             stationId: "frekvence1_cz",
             channel: "frekvence1"
         )
-        async let somaTask: Void = fetchSomaFMMetadata()
 
-        _ = await (expresTask, europa2Task, melodyTask, rockTask, evropa2CzTask, frekvence1CzTask, somaTask)
+        _ = await (expresTask, europa2Task, melodyTask, rockTask, evropa2CzTask, frekvence1CzTask)
     }
 
     private func fetchExpresMetadata() async {
@@ -717,40 +716,6 @@ final class RadioPlayerManager: ObservableObject {
                     ageSeconds: 0
                 )
             ]
-        } catch {}
-    }
-
-    private func fetchSomaFMMetadata() async {
-        guard let url = URL(string: "https://api.somafm.com/channels.json") else { return }
-        do {
-            let (data, response) = try await URLSession.shared.data(from: url)
-            guard (response as? HTTPURLResponse)?.statusCode == 200,
-                  let root = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let channels = root["channels"] as? [[String: Any]] else { return }
-
-            let somaStations = stations.filter { $0.network == .somaFM }
-            for st in somaStations {
-                guard let ch = channels.first(where: { ($0["id"] as? String) == st.sepiaKey }) else { continue }
-                if let listenersStr = ch["listeners"] as? String, let count = Int(listenersStr) {
-                    self.stationListeners[st.id] = count
-                }
-                if let lastPlaying = ch["lastPlaying"] as? String, !lastPlaying.isEmpty {
-                    let parts = lastPlaying.components(separatedBy: " - ")
-                    let artist = parts.count > 1 ? parts[0].trimmingCharacters(in: .whitespaces) : ""
-                    let song = parts.count > 1 ? parts.dropFirst().joined(separator: " - ").trimmingCharacters(in: .whitespaces) : lastPlaying
-                    let imgStr = (ch["largeimage"] as? String) ?? (ch["image"] as? String)
-                    self.stationTracks[st.id] = [
-                        LiveTrackInfo(
-                            order: 0,
-                            artist: artist,
-                            title: song,
-                            coverURL: imgStr.flatMap(URL.init(string:)),
-                            videoURL: nil,
-                            ageSeconds: 0
-                        )
-                    ]
-                }
-            }
         } catch {}
     }
 

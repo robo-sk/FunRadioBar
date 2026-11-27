@@ -4,8 +4,7 @@ enum BroadcastMedia {
     private static let artworkHosts: Set<String> = [
         "www.funradio.sk", "www.radiovlna.sk", "radiogroup-cms.vercel.app",
         "ddvbk8xgdxx9n6sy.public.blob.vercel-storage.com", "www.expres.sk", "www.europa2.sk",
-        "www.radiomelody.sk", "api.radiorock.sk", "i.ytimg.com", "c.actve.net", "m.actve.net",
-        "api.somafm.com", "somafm.com"
+        "www.radiomelody.sk", "api.radiorock.sk", "i.ytimg.com", "c.actve.net", "m.actve.net"
     ]
 
     private static func allows(_ url: URL, hosts: Set<String>) -> Bool {

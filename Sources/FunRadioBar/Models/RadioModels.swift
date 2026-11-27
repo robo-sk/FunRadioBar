@@ -10,7 +10,6 @@ enum RadioNetwork: String, CaseIterable, Identifiable, Codable {
     case vlna = "vlna"
     case bauerAndCz = "bauerAndCz"
     case stvr = "stvr"
-    case somaFM = "somaFM"
 
     var id: String { rawValue }
 
@@ -20,7 +19,6 @@ enum RadioNetwork: String, CaseIterable, Identifiable, Codable {
         case .vlna: return "VLNA"
         case .bauerAndCz: return "SK/CZ"
         case .stvr: return "STVR"
-        case .somaFM: return "SOMAFM"
         case .all, .favorites: return "LIVE"
         }
     }
@@ -30,7 +28,6 @@ enum RadioNetwork: String, CaseIterable, Identifiable, Codable {
         case .vlna: return URL(string: "https://www.radiovlna.sk")!
         case .bauerAndCz: return URL(string: "https://www.expres.sk")!
         case .stvr: return URL(string: "https://www.stvr.sk/radia")!
-        case .somaFM: return URL(string: "https://somafm.com")!
         default: return URL(string: "https://www.funradio.sk")!
         }
     }
@@ -416,64 +413,6 @@ struct RadioStation: Identifiable, Hashable, Codable {
             standardURL: "https://icecast.stv.livebox.sk/devin_128.mp3",
             hdURL: "https://icecast.stv.livebox.sk/devin_128.mp3",
             ecoURL: "https://icecast.stv.livebox.sk/devin_128.mp3"
-        ),
-
-        // --- 5. SOMAFM CODING & FOCUS CHANNELS (4) ---
-        RadioStation(
-            id: "soma_groovesalad",
-            sepiaKey: "groovesalad",
-            icecastMount: "",
-            name: "SomaFM Groove Salad",
-            subtitle: "Ambient & downtempo beats pre prácu",
-            network: .somaFM,
-            symbolName: "sparkles.tv.fill",
-            primaryColorHex: 0x14B8A6,
-            secondaryColorHex: 0x0F766E,
-            standardURL: "https://ice2.somafm.com/groovesalad-256-mp3",
-            hdURL: "https://ice2.somafm.com/groovesalad-256-mp3",
-            ecoURL: "https://ice2.somafm.com/groovesalad-128-mp3"
-        ),
-        RadioStation(
-            id: "soma_defcon",
-            sepiaKey: "defcon",
-            icecastMount: "",
-            name: "SomaFM DEF CON",
-            subtitle: "Hudba pre programovanie a hacking",
-            network: .somaFM,
-            symbolName: "terminal.fill",
-            primaryColorHex: 0x22C55E,
-            secondaryColorHex: 0x15803D,
-            standardURL: "https://ice2.somafm.com/defcon-256-mp3",
-            hdURL: "https://ice2.somafm.com/defcon-256-mp3",
-            ecoURL: "https://ice2.somafm.com/defcon-128-mp3"
-        ),
-        RadioStation(
-            id: "soma_secretagent",
-            sepiaKey: "secretagent",
-            icecastMount: "",
-            name: "SomaFM Secret Agent",
-            subtitle: "Špionážny lounge, jazz a soundtracky",
-            network: .somaFM,
-            symbolName: "sunglasses.fill",
-            primaryColorHex: 0xF43F5E,
-            secondaryColorHex: 0x9F1239,
-            standardURL: "https://ice2.somafm.com/secretagent-128-mp3",
-            hdURL: "https://ice2.somafm.com/secretagent-128-mp3",
-            ecoURL: "https://ice2.somafm.com/secretagent-128-mp3"
-        ),
-        RadioStation(
-            id: "soma_u80s",
-            sepiaKey: "u80s",
-            icecastMount: "",
-            name: "SomaFM Underground 80s",
-            subtitle: "80s synthpop a UK new wave",
-            network: .somaFM,
-            symbolName: "dial.medium.fill",
-            primaryColorHex: 0xA855F7,
-            secondaryColorHex: 0x6B21A8,
-            standardURL: "https://ice2.somafm.com/u80s-256-mp3",
-            hdURL: "https://ice2.somafm.com/u80s-256-mp3",
-            ecoURL: "https://ice2.somafm.com/u80s-128-mp3"
         )
     ]
 }

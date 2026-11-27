@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/images/app-icon.png" width="88" height="88" alt=""></p>
 <h1 align="center">FunRadioBar</h1>
-<p align="center">Slovak and Czech radio, plus SomaFM, one click from your Mac’s menu bar.</p>
+<p align="center">Slovak and Czech radio, one click from your Mac’s menu bar.</p>
 <p align="center"><strong><a href="https://github.com/robo-sk/FunRadioBar/releases/latest/download/FunRadioBar.zip">Download for Mac</a></strong> · <a href="https://github.com/robo-sk/FunRadioBar/releases/latest">Release notes</a><br><sub>macOS Sonoma 14 or later · Apple silicon and Intel · English and Slovenčina</sub></p>
 
 ## On your Mac
@@ -43,4 +43,8 @@ Keep it on the desktop or pin it above other windows. The moon button in the mai
 
 Favorites, listening history and player settings are stored on your Mac. FunRadioBar contacts broadcasters and metadata providers for streams, artwork, song information and schedules. These servers can see your IP address when contacted, including when the player refreshes information while paused. App update checks contact GitHub. Opening a music or video link takes you to that service.
 
-FunRadioBar is an independent player. Station names identify their respective broadcasters.
+## Listening notice
+
+FunRadioBar is a free, independent showcase of what a Mac radio player can look like. We share it for personal exploration and have no plans to sell it or market it for mass distribution.
+
+When you play a station, your Mac connects directly to the broadcaster’s publicly accessible stream URL. Each provider sets its own listening terms and geographic restrictions. Please check the provider’s policies before listening or using a stream elsewhere. Station names identify their respective broadcasters. Installing FunRadioBar grants no additional rights to record, rebroadcast, or redistribute their programming.

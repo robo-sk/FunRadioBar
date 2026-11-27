@@ -179,7 +179,6 @@ struct L10n {
         case (.bauerAndCz, .sk): return "SK & CZ Hity"
         case (.bauerAndCz, .en): return "SK & CZ Hits"
         case (.stvr, _): return "STVR"
-        case (.somaFM, _): return "SomaFM Chill"
         }
     }
 
@@ -187,7 +186,6 @@ struct L10n {
         let name: String
         switch net {
         case .stvr: name = lang == .sk ? "STVR / Verejnoprávne" : "STVR Public Radio"
-        case .somaFM: name = "SomaFM Focus & Chill"
         default: name = networkFilterName(net, stationCount: stationCount)
         }
         let stationWord: String
@@ -281,10 +279,6 @@ struct L10n {
         case "stvr_fm": return "Alternative, Indie & Electronic · STVR"
         case "stvr_slovensko": return "STVR Main Public Channel · News & Music"
         case "stvr_devin": return "Culture, Jazz & Classical Music · STVR"
-        case "soma_groovesalad": return "Ambient & Downtempo Beats for Focus"
-        case "soma_defcon": return "Music for Hacking, Coding & Focus"
-        case "soma_secretagent": return "Spy Lounge, Cool Jazz & Soundtracks"
-        case "soma_u80s": return "Early 80s Synthpop & UK New Wave"
         default: return station.subtitle
         }
     }
