@@ -118,14 +118,22 @@ struct MenuBarContentView: View {
                         .font(.caption)
                         .foregroundStyle(textSecondary)
                 }
-                if let version = updates.availableVersion {
-                    Button(l10n.updateAvailable(version)) { updates.check() }
-                        .padding(.top, 4)
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(spacing: 8) {
+                        Text("FunRadioBar \(AppUpdates.installedVersion)")
+                            .font(.caption)
+                            .foregroundStyle(textMuted)
+                        if let version = updates.availableVersion {
+                            Button(l10n.updateAvailable(version)) { updates.check() }
+                                .controlSize(.small)
+                                .buttonStyle(.bordered)
+                        }
+                    }
+                    footerBar
                 }
-                footerBar
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(Color(hex: 0x080A11))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Color(hex: 0x080A11))
             }
         }
         .frame(width: 410, height: 640)
@@ -327,80 +335,81 @@ struct MenuBarContentView: View {
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(textSecondary)
                         .lineLimit(1)
-
-                    // Action Pills: Like, Spotify, YouTube, Copy
-                    if let track = currentTrack, !track.title.isEmpty {
-                        HStack(spacing: 6) {
-                            let isLiked = manager.isTrackLiked(track)
-                            Button {
-                                manager.toggleLikeCurrentTrack()
-                            } label: {
-                                Label(isLiked ? l10n.savedBadge : l10n.saveButton, systemImage: isLiked ? "heart.fill" : "heart")
-                                    .font(.system(size: 10, weight: .bold))
-                                    .foregroundStyle(isLiked ? Color(hex: 0xFF2D78) : textPrimary)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(cardElevated, in: Capsule())
-                                    .overlay(Capsule().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
-                            }
-                            .buttonStyle(.plain)
-                            .controlHelp(isLiked ? l10n.removeLikedHelp : l10n.addLikedHelp)
-
-                            if let spotifyURL = track.spotifySearchURL {
-                                Button {
-                                    openURL(spotifyURL)
-                                } label: {
-                                    Label("Spotify", systemImage: "music.note.list")
-                                        .font(.system(size: 10, weight: .bold))
-                                        .foregroundStyle(Color(hex: 0x1ED760))
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(cardElevated, in: Capsule())
-                                        .overlay(Capsule().strokeBorder(Color(hex: 0x1ED760).opacity(0.3), lineWidth: 1))
-                                }
-                                .buttonStyle(.plain)
-                                .controlHelp(l10n.openInSpotifyHelp)
-                            }
-
-                            if let ytURL = track.youtubeWatchOrSearchURL {
-                                Button {
-                                    openURL(ytURL)
-                                } label: {
-                                    Label(track.videoURL != nil ? l10n.videoClipButton : "YouTube", systemImage: "play.rectangle.fill")
-                                        .font(.system(size: 10, weight: .bold))
-                                        .foregroundStyle(Color(hex: 0xFF6B6B))
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(cardElevated, in: Capsule())
-                                        .overlay(Capsule().strokeBorder(Color(hex: 0xFF6B6B).opacity(0.3), lineWidth: 1))
-                                }
-                                .buttonStyle(.plain)
-                                .controlHelp(l10n.openInYouTubeHelp)
-                            }
-
-                            Button {
-                                NSPasteboard.general.clearContents()
-                                NSPasteboard.general.setString(track.displayLine, forType: .string)
-                                copiedFeedback = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                    copiedFeedback = false
-                                }
-                            } label: {
-                                Image(systemName: copiedFeedback ? "checkmark" : "doc.on.doc")
-                                    .font(.system(size: 9.5, weight: .bold))
-                                    .foregroundStyle(copiedFeedback ? Color(hex: 0x10B981) : textSecondary)
-                                    .frame(width: 24, height: 22)
-                                    .background(cardElevated, in: Circle())
-                                    .overlay(Circle().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
-                            }
-                            .buttonStyle(.plain)
-                            .controlHelp(l10n.copyTrackHelp)
-                        }
-                        .padding(.top, 2)
-                    }
                 }
 
                 Spacer(minLength: 0)
+            }
+
+            // Action Pills: Like, Spotify, YouTube, Copy
+            if let track = currentTrack, !track.title.isEmpty {
+                HStack(spacing: 6) {
+                    let isLiked = manager.isTrackLiked(track)
+                    Button {
+                        manager.toggleLikeCurrentTrack()
+                    } label: {
+                        Label(isLiked ? l10n.savedBadge : l10n.saveButton, systemImage: isLiked ? "heart.fill" : "heart")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(isLiked ? Color(hex: 0xFF2D78) : textPrimary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(cardElevated, in: Capsule())
+                            .overlay(Capsule().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                    .controlHelp(isLiked ? l10n.removeLikedHelp : l10n.addLikedHelp)
+
+                    if let spotifyURL = track.spotifySearchURL {
+                        Button {
+                            openURL(spotifyURL)
+                        } label: {
+                            Label("Spotify", systemImage: "music.note.list")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(Color(hex: 0x1ED760))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(cardElevated, in: Capsule())
+                                .overlay(Capsule().strokeBorder(Color(hex: 0x1ED760).opacity(0.3), lineWidth: 1))
+                        }
+                        .buttonStyle(.plain)
+                        .controlHelp(l10n.openInSpotifyHelp)
+                    }
+
+                    if let ytURL = track.youtubeWatchOrSearchURL {
+                        Button {
+                            openURL(ytURL)
+                        } label: {
+                            Label(track.videoURL != nil ? l10n.videoClipButton : "YouTube", systemImage: "play.rectangle.fill")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(Color(hex: 0xFF6B6B))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(cardElevated, in: Capsule())
+                                .overlay(Capsule().strokeBorder(Color(hex: 0xFF6B6B).opacity(0.3), lineWidth: 1))
+                        }
+                        .buttonStyle(.plain)
+                        .controlHelp(l10n.openInYouTubeHelp)
+                    }
+
+                    Button {
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(track.displayLine, forType: .string)
+                        copiedFeedback = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            copiedFeedback = false
+                        }
+                    } label: {
+                        Image(systemName: copiedFeedback ? "checkmark" : "doc.on.doc")
+                            .font(.system(size: 9.5, weight: .bold))
+                            .foregroundStyle(copiedFeedback ? Color(hex: 0x10B981) : textSecondary)
+                            .frame(width: 24, height: 22)
+                            .background(cardElevated, in: Circle())
+                            .overlay(Circle().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                    .controlHelp(l10n.copyTrackHelp)
+                }
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
             }
 
             // Up Next Preview Strip ("Nasleduje" / "Up Next") if Sepia provides poradie 1/2

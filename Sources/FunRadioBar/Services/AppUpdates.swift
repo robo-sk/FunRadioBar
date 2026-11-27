@@ -4,6 +4,7 @@ import SwiftUI
 @MainActor
 final class AppUpdates: NSObject, ObservableObject, @preconcurrency SPUStandardUserDriverDelegate {
     static let shared = AppUpdates()
+    static let installedVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Dev"
 
     @Published private(set) var canCheck = false
     @Published private(set) var checksAutomatically = false

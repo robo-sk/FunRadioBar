@@ -36,7 +36,7 @@ Keep it on the desktop or pin it above other windows. The moon button in the mai
 | --- | --- |
 | See the latest song, listener count and schedule | **Refresh Info** (circular arrow in the footer). |
 | Find a seasonal Fun Rádio stream or check availability | **Rescan Stations** (antenna in the footer). Delisted streams disappear after a successful scan. **Show unavailable stations** reveals listed streams that returned an error. |
-| Check for a new version of FunRadioBar | **Menu Bar → Check for App Updates…**. Automatic checks are on by default and can be switched off in the same menu. An available update appears in the player so you can choose when to restart. |
+| Check for a new version of FunRadioBar | The footer shows your installed version. When a newer version is found, click the update button beside it. To check manually, use **Menu Bar → Check for App Updates…**. Automatic checks are on by default and can be switched off in the same menu. |
 | Learn what a control does | Right-click or Control-click the control for its description. |
 
 ## Privacy
